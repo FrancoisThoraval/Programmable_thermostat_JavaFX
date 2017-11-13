@@ -10,7 +10,6 @@ let socket = new WebSocket("ws://localhost:8080/", "PauWare_view");
 socket.onmessage = onMessage;
 
 socket.onopen = (event)=>{
-    
     console.log("coucou");
     let message = {
         action: "CONNECTION ESTABLISHED",
