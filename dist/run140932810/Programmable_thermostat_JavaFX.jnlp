@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="Programmable_thermostat_JavaFX.jnlp">
+  <information>
+    <title>Programmable_thermostat_JavaFX</title>
+    <vendor>Franck Barbier</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="Programmable_thermostat_JavaFX.jar" size="83059" download="eager" />
+    <jar href="lib\PauWare_Java_EE.jar" size="82402" download="eager" />
+    <jar href="lib\javax.json-1.0.4.jar" size="85147" download="eager" />
+  </resources>
+  <applet-desc  width="1000" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="Programmable_thermostat_JavaFX" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="1000" height="600" main-class="com.FranckBarbier.Java._Programmable_thermostat_GUI.User_interface_JavaFX"  name="Programmable_thermostat_JavaFX" />
+  <update check="always"/>
+</jnlp>

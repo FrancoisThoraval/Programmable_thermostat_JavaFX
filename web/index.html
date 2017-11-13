@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="Ressources/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="Ressources/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="Ressources/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="Ressources/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="Ressources/apple-touch-icon-60x60.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="Ressources/apple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="Ressources/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="Ressources/apple-touch-icon-152x152.png" />
+    <link rel="icon" type="image/png" href="Ressources/favicon-196x196.png" sizes="196x196" />
+    <link rel="icon" type="image/png" href="Ressources/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="Ressources/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="Ressources/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" type="image/png" href="Ressources/favicon-128.png" sizes="128x128" />
+    <meta name="application-name" content="Programmable Thermostat"/>
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="Ressources/mstile-144x144.png" />
+    <meta name="msapplication-square70x70logo" content="Ressources/mstile-70x70.png" />
+    <meta name="msapplication-square150x150logo" content="Ressources/mstile-150x150.png" />
+    <meta name="msapplication-wide310x150logo" content="Ressources/mstile-310x150.png" />
+    <meta name="msapplication-square310x310logo" content="Ressources/mstile-310x310.png" />
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Programmable Thermostat</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="look.css">
+  </head>
+  <body>
+    <div class="container-fluid">
+        <div id="warning" class="alert alert-warning" role="alert">
+             <strong>Warning!</strong> Application still in development !
+        </div>
+        
+        
+        
+        <!--Temperature text -->
+        <div class="card text-center">
+            <div class="card-header">
+                <h1>Programmable Thermostat</h1>
+                <h5> Friday 06/10/2017 </h5>
+            </div>
+            <div class="card-block">
+                <h1 id="actualTemp" class="card-title">Actual Temp: 21 °C</h1>
+                <h5 id="nextTemp" class="card-title">Next Temp: 23 °C</h5>
+                
+                <!-- Temperature Display-->
+                <div id="tempOptions" class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                        <input type="radio" name="options" id="optionC" autocomplete="off"> °C
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" name="options" id="optionF" autocomplete="off"> °F
+                    </label>
+                    <label class="btn btn-outline-info">
+                        <input type="checkbox" class="btn btn-primary">Hold Temp
+                    </label>
+                </div>
+                
+                <!-- Action on Temperature -->
+                <div class="">
+                    <input id="futureTempIn" type="range" value="21" max="25" min="15" step="0.1" oninput="futureTempOut.value = futureTempIn.value">
+                    <output id="futureTempOut">21</output>
+                    <!-- hyper sale faudra changer avec du JS mais là j'ai la flemme -->
+                </div>
+                
+                <p>Will be at temp selected in: xx:yy:zz (hours:mins:seconds)</p>
+                <div class="btn-group">
+                    <button id="run_program" type="button" class="btn btn-primary">Run Program</button>
+                </div>
+                <br>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-outline-primary">
+                        <input type="radio" name="options" id="option1" autocomplete="off"> Cool
+                    </label>
+                    <label class="btn btn-outline-danger">
+                        <input type="radio" name="options" id="option2" autocomplete="off"> Heat
+                    </label>
+                    <label class="btn btn-outline-warning">
+                        <input type="radio" class="btn btn-primary">Off
+                    </label>
+                </div>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary">Set Clock</button>
+                    <button type="button" class="btn btn-secondary">Set Day</button>
+                    <button type="button" class="btn btn-secondary">View Program</button>
+                </div>
+                <br>
+                <hr>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary">Time Forward</button>
+                    <button type="button" class="btn btn-secondary">Time Backward</button>
+                </div>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-outline-success active">
+                        <input id="fan_switch_auto" type="radio" class="btn btn-primary">Auto
+                    </label>
+                    <label class="btn btn-outline-success">
+                        <input id="fan_switch_on" type="radio" class="btn btn-primary">On
+                    </label>
+                </div>
+                
+            </div>
+            <div class="card-footer text-muted">
+                Made with ❤ by Gregory Lucchese & François Thoraval
+            </div>
+        </div>
+    </div>
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="websocket.js"></script>
+  </body>
+</html>
