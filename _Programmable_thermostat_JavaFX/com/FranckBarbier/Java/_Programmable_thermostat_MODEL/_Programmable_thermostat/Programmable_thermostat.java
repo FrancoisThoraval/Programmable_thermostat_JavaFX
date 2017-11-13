@@ -302,7 +302,12 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         try {
             if(_websocket.getClient()!= null){
                 String[] message = new String[10];
-                String temp = this._ambient_temperature.asStringCelsius(1);
+                String temp;
+                if(this._temperature_mode == 0){
+                    temp = this._ambient_temperature.asStringCelsius(1);
+                }else{
+                    temp = this._ambient_temperature.asStringFahrenheit(1);
+                }
                 
                 //We have to remove the ° character from the temp otherwise it cause an Json input error in JS, thus close the socket connection.
                 message[0] = temp.substring(0, temp.length() -2);

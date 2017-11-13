@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Programmable_thermostat_JavaFX.jar" size="82793" download="eager" />
+    <jar href="Programmable_thermostat_JavaFX.jar" size="82830" download="eager" />
     <jar href="lib\PauWare_Java_EE.jar" size="82402" download="eager" />
     <jar href="lib\javax.json-1.0.4.jar" size="85147" download="eager" />
   </resources>
