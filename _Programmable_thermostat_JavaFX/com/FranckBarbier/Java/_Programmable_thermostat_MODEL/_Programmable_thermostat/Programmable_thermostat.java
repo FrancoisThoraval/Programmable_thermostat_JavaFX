@@ -12,10 +12,16 @@ import com.FranckBarbier.Java._Programmable_thermostat_MODEL._Relays.*;
 import com.FranckBarbier.Java._Programmable_thermostat_MODEL._Switchs.*;
 import com.FranckBarbier.Java._Temperature.*;
 import com.LuccheseThoraval.Java._Temperature.Websocket.Websocket;
+import com.seekdasky.websocket.Client;
+import com.seekdasky.websocket.Event;
 import com.seekdasky.websocket.Token;
+import com.seekdasky.websocket.WebSocketServer;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static javax.json.Json.createObjectBuilder;
+import javax.json.JsonObjectBuilder;
 
 final class Program {
 
@@ -27,13 +33,20 @@ final class Program {
     long difference;
 }
 
-public class Programmable_thermostat extends AbstractTimer_monitor implements Programmable_thermostat_input, Fan_switch_output, Run_indicator_output, Season_switch_output, Temperature_sensor_output, Manageable_base, Java_MEExecutor {
-    
+public class Programmable_thermostat extends AbstractTimer_monitor implements Programmable_thermostat_input, Fan_switch_output, Run_indicator_output, Season_switch_output, Temperature_sensor_output, Manageable_base, Java_MEExecutor, com.pauware.pauware_engine._Core.AbstractStatechart_monitor_listener, com.seekdasky.websocket.WebSocketListener {
+
     /**
      * Websocket
      */
-    private Websocket _websocket = new Websocket();
-    
+    private static WebSocketServer _WebSocketServer = null;
+    private static Client _client = null;
+
+    static {
+        _WebSocketServer.printCopyrightToConsole();
+        _WebSocketServer = com.seekdasky.websocket.WebSocketServer.getInstance();
+
+        _WebSocketServer.start();
+    }
     /**
      * UML control flow
      */
@@ -139,6 +152,20 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         }
     }
 
+    //Websocket
+    public JsonObjectBuilder createMessage(String action, String[] message) {
+        int i = 0;
+        JsonObjectBuilder json = createObjectBuilder();
+        json.add("action", action);
+        while (message[i] != null && i < message.length) {
+            String field = "value" + i;
+            json.add(field, message[i]);
+            i++;
+        }
+        return json;
+
+    }
+
     private void init_structure(Temperature temperature) throws Statechart_exception {
         try {
             _ambient_temperature = (Temperature) temperature.clone();
@@ -187,7 +214,7 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         _Program_refreshing = (_Program_target_temperature_refreshing.and(_Period_and_program_time_refreshing)).name("Program refreshing");
         _Setup = ((_Set_time.xor(_Set_current_day).xor(_Set_program).and(_Current_date_and_time_refreshing.xor(_Program_refreshing))).name("Setup"));
         _Control = new Java_MEStatechart("Control");
-        _Programmable_thermostat_state_machine = new Java_MEStatechart_monitor((_Operate.xor(_Setup)).and(_Control), "Programmable thermostat", AbstractStatechart_monitor.Show_on_system_out,_websocket);
+        _Programmable_thermostat_state_machine = new Java_MEStatechart_monitor((_Operate.xor(_Setup)).and(_Control), "Programmable thermostat", AbstractStatechart_monitor.Show_on_system_out, this);
         _Programmable_thermostat_state_machine.set_entryAction(this, "to_be_set", new Object[]{Integer.valueOf(1000)});
         _Programmable_thermostat_state_machine.set_exitAction(this, "to_be_killed");
     }
@@ -297,28 +324,50 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         _Programmable_thermostat_state_machine.fires("ambient_temperature_changed", _Control, _Control, this, "season_switch_in_Is_cool_and_ambient_temperature_lessThan_target_temperature_minus_delta", _fan_relay, "stop", new Object[]{Boolean.valueOf(_fan_switch.in("Is auto"))});
         _Programmable_thermostat_state_machine.fires("ambient_temperature_changed", _Control, _Control, this, "season_switch_in_Is_heat_and_ambient_temperature_greaterThan_target_temperature_plus_delta", _fan_relay, "stop", new Object[]{Boolean.valueOf(_fan_switch.in("Is auto"))});
         _Programmable_thermostat_state_machine.run_to_completion("ambient_temperature_changed");
-        
+
         //SENDING TO WEBSOCKET SO WE CAN REFRESH HTML PAGE
         try {
-            if(_websocket.getClient()!= null){
+            if (_client != null) {
                 String[] message = new String[10];
                 String temp;
-                if(this._temperature_mode == 0){
+                if (this._temperature_mode == 0) {
                     temp = this._ambient_temperature.asStringCelsius(1);
-                }else{
+                } else {
                     temp = this._ambient_temperature.asStringFahrenheit(1);
                 }
-                
-                //We have to remove the ° character from the temp otherwise it cause an Json input error in JS, thus close the socket connection.
-                message[0] = temp.substring(0, temp.length() -2);
-                message[1] = temp.substring(temp.length()-1, temp.length());
+
+                //We have to remove the ° character from the temp otherwise it causes a Json input error in JS, thus close the socket connection.
+                message[0] = temp.substring(0, temp.length() - 2);
+                message[1] = temp.substring(temp.length() - 1, temp.length());
                 System.out.println("\n*******TEMP*******\n" + temp);
-                _websocket.getServer().sendToken(_websocket.getClient(), Token.buildFromJSON(_websocket.createMessage("display_ambient_temperature",message).build()));
-                
+                _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_ambient_temperature", message).build()));
+
             }
         } catch (IOException ex) {
             Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        try {
+            if (_client != null) {
+                String[] message = new String[10];
+                String temp;
+                if (this._temperature_mode == 0) {
+                    temp = this._target_temperature.asStringCelsius(1);
+                } else {
+                    temp = this._target_temperature.asStringFahrenheit(1);
+                }
+
+                //We have to remove the ° character from the temp otherwise it causes a Json input error in JS, thus close the socket connection.
+                message[0] = temp.substring(0, temp.length() - 2);
+                message[1] = temp.substring(temp.length() - 1, temp.length());
+                System.out.println("\n*******TEMP*******\n" + temp);
+                _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_target_temperature", message).build()));
+
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     public void fan_switch_turned_on() throws Statechart_exception {
@@ -326,7 +375,6 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
     }
 
     public void f_c() throws Statechart_exception {
-        
         _Programmable_thermostat_state_machine.run_to_completion("f_c");
     }
 
@@ -415,7 +463,7 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
     /**
      * UML actions
      */
-     void display_ambient_temperature() {
+    void display_ambient_temperature() {
         if (_user_interface != null) {
             switch (_temperature_mode) {
                 case Temperature.Celsius:
@@ -461,6 +509,8 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         if (_user_interface != null) {
             _user_interface.display_target_temperature(_target_temperature, _temperature_mode);
         }
+
+        //SENDING TO WEBSOCKET SO WE CAN REFRESH HTML PAGE
     }
 
     void program_at_period_target_temperature_decrement(int index) {
@@ -766,5 +816,83 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
 
     public String verbose() {
         return _Programmable_thermostat_state_machine.verbose();
+    }
+
+    @Override
+    public void post_construct(AbstractStatechart_monitor as) throws Exception {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void start(String string) throws Exception {
+        System.out.println("start");
+        System.out.println(string);
+        _WebSocketServer.addListener(this);
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void run_to_completion(String string, Hashtable hshtbl) throws Exception {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void stop(String string) throws Exception {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void pre_destroy() throws Exception {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void processEvent(Event event, Token token) {
+        if (_client == null) {
+            _client = event.getConnector();
+            System.out.println("\n****Connection established****\n");
+        }
+        System.out.println("action: " + token.getString("action"));
+
+        //Action from Client
+        switch (token.getString("action")) {
+            case "hold_temp": {
+                try {
+                    hold_temp();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "f_c": {
+                try {
+                    f_c();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "heat": {
+                try {
+                    season_switch_heat();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "cold": {
+                try {
+                    season_switch_cool();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void processClosed(Event event) {
+        System.err.println("\n\n\n process closed ! Lost Connection with Client !\n\n\n");
     }
 }

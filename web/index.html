@@ -28,7 +28,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Programmable Thermostat</title>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" crossorigin="anonymous"> -->
     <link rel="stylesheet" type="text/css" href="look.css">
   </head>
   <body>
@@ -47,7 +47,7 @@
             </div>
             <div class="card-block">
                 <h1 id="actualTemp" class="card-title">Actual Temp: 21 °C</h1>
-                <h5 id="nextTemp" class="card-title">Next Temp: 23 °C</h5>
+                <h5 id="targetTemp" class="card-title">Target Temp: 23 °C</h5>
                 
                 <!-- Temperature Display-->
                 <div id="tempOptions" class="btn-group" data-toggle="buttons">
@@ -58,7 +58,7 @@
                         <input type="radio" name="options" id="optionF" autocomplete="off"> °F
                     </label>
                     <label class="btn btn-outline-info">
-                        <input type="checkbox" class="btn btn-primary">Hold Temp
+                        <input type="checkbox" class="btn btn-primary" id="optionHoldTemp">Hold Temp
                     </label>
                 </div>
                 
@@ -74,12 +74,12 @@
                     <button id="run_program" type="button" class="btn btn-primary">Run Program</button>
                 </div>
                 <br>
-                <div class="btn-group" data-toggle="buttons">
+                <div id="CoolHeatOff" class="btn-group" data-toggle="buttons">
                     <label class="btn btn-outline-primary">
-                        <input type="radio" name="options" id="option1" autocomplete="off"> Cool
+                        <input id="cool" type="radio" name="options" id="option1" autocomplete="off"> Cool
                     </label>
                     <label class="btn btn-outline-danger">
-                        <input type="radio" name="options" id="option2" autocomplete="off"> Heat
+                        <input id="heat" type="radio" name="options" id="option2" autocomplete="off"> Heat
                     </label>
                     <label class="btn btn-outline-warning">
                         <input type="radio" class="btn btn-primary">Off
@@ -114,7 +114,7 @@
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" crossorigin="anonymous"></script> -->
     <script src="websocket.js"></script>
   </body>
 </html>

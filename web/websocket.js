@@ -22,7 +22,7 @@ socket.onclose = (event)=>{
     console.error("CLIENT SAYS:");
     console.error("LOST CONNECTION TO SERVER");
     console.error("Please reboot java app and refresh this page !");
-}
+};
 
 
 function onMessage(event){
@@ -71,11 +71,18 @@ function onMessage(event){
             break;
         case "display_program_target_temperature": display_program_target_temperature();
             break;
-        case "display_target_temperature":display_target_temperature();
+        case "display_target_temperature":display_target_temperature(thermostat);
             break;
         case "update_run_indicator_status":update_run_indicator_status();
             break;
     }
+}
+
+function display_target_temperature(jsonValues){
+    let temp = jsonValues.value0;
+    let unit = jsonValues.value1;
+    
+    $('#targetTemp').html("Target Temp: " + temp + "°" + unit);
 }
 
 function display_ambient_temperature(jsonValues){
@@ -118,7 +125,27 @@ function main(){
         };
         socket.send(JSON.stringify(message));
     });
+        
+    $('#cool').on('change', function(event){
+        console.log("Cooling");
+        let message = {
+            action: "cool",
+            description: "asking to cool temperature in house" 
+        };
+        socket.send(JSON.stringify(message));
+    });
     
+    
+    $('#heat').on('change', function(event){
+        console.log("Heating");
+        let message = {
+            action: "heat",
+            description: "asking to heat temperature in house" 
+        };
+        socket.send(JSON.stringify(message));
+    });
+    
+    //Bootstraps fucks this part ...
     $('#tempOptions').on('click',function(event){
         let message;
         if($('#optionC').is(':checked')){
@@ -138,9 +165,13 @@ function main(){
             };
             console.log(JSON.stringify(message));
         }else if ($('#optionHoldTemp').is(':checked')){
-            console.log("checked hold temp");
+            message = {
+                action: "hold_temp",
+                description: "Asking to hold temperature"
+            };
+            console.log(JSON.stringify(message));
         }
-        alert(JSON.stringify(message));
+        //alert(JSON.stringify(message));
         socket.send(JSON.stringify(message));
     });
 }
