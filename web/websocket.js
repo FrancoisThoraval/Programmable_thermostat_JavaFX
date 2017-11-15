@@ -5,8 +5,8 @@ Object.defineProperty(window, "Window_loaded", {value: new Promise(g => {
         Window_loaded = main;
     }), enumerable: false, configurable: false, writable: false});
 window.addEventListener('load', Window_loaded);
-
-let socket = new WebSocket("ws://localhost:8080/", "PauWare_view");
+let socket = new WebSocket("ws://192.168.1.13:8080/", "PauWare_view");
+//let socket = new WebSocket("ws://localhost:8080/", "PauWare_view");
 socket.onmessage = onMessage;
 
 socket.onopen = (event) => {
