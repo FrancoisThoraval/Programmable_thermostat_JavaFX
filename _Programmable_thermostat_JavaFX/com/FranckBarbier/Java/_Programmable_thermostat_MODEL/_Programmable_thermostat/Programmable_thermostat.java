@@ -571,6 +571,22 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         java.util.Date date = _time.getTime();
         date.setTime(date.getTime() + step.intValue() * 1000);
         _time.setTime(date);
+        try {
+            if (_client != null) {
+                String[] message = new String[10];
+                String value;
+                value = date.toString();
+
+                message[0] = value;
+                System.out.println("\n*******TIME*******\n" + value);
+                _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_current_date_and_time", message).build()));
+
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        System.out.println("\n\nakjhakhd\n\n\n\n\n\n\n\n");
     }
 
     void switch_mode() {
@@ -887,6 +903,21 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
                     Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
+            }
+            case "target_temp_change":{
+                if(_temperature_mode == 0){ //Celcius
+                    try {
+                        this._target_temperature = new Temperature(Float.parseFloat(token.getString("temp")),Temperature.Celsius);
+                    } catch (Invalid_temperature_exception ex) {
+                        Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }else{
+                    try {
+                        this._target_temperature = new Temperature(Float.parseFloat(token.getString("temp")),Temperature.Fahrenheit);
+                    } catch (Invalid_temperature_exception ex) {
+                        Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
     }

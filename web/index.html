@@ -28,7 +28,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Programmable Thermostat</title>
     <!-- Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="look.css">
   </head>
   <body>
@@ -43,7 +43,7 @@
         <div class="card text-center">
             <div class="card-header">
                 <h1>Programmable Thermostat</h1>
-                <h5> Friday 06/10/2017 </h5>
+                <h5 id="date"> Friday 06/10/2017 </h5>
             </div>
             <div class="card-block">
                 <h1 id="actualTemp" class="card-title">Actual Temp: 21 °C</h1>
@@ -51,25 +51,18 @@
                 
                 <!-- Temperature Display-->
                 <div id="tempOptions" class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-primary active">
-                        <input type="radio" name="options" id="optionC" autocomplete="off"> °C
-                    </label>
-                    <label class="btn btn-primary">
-                        <input type="radio" name="options" id="optionF" autocomplete="off"> °F
-                    </label>
-                    <label class="btn btn-outline-info">
-                        <input type="checkbox" class="btn btn-primary" id="optionHoldTemp">Hold Temp
-                    </label>
+                    <div class="btn-group">
+                        <button id="f_c" type="button" class="btn btn-primary">F/C</button>
+                        <button id="optionHoldTemp" type="button" class="btn btn-outline-info">Hold Temp </button>
+                    </div>
                 </div>
                 
                 <!-- Action on Temperature -->
                 <div class="">
-                    <input id="futureTempIn" type="range" value="21" max="25" min="15" step="0.1" oninput="futureTempOut.value = futureTempIn.value">
+                    <input id="futureTempIn" type="range" value="21" max="25" min="15" step="0.1">
                     <output id="futureTempOut">21</output>
                     <!-- hyper sale faudra changer avec du JS mais là j'ai la flemme -->
                 </div>
-                
-                <p>Will be at temp selected in: xx:yy:zz (hours:mins:seconds)</p>
                 <div class="btn-group">
                     <button id="run_program" type="button" class="btn btn-primary">Run Program</button>
                 </div>
@@ -114,7 +107,7 @@
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" crossorigin="anonymous"></script>
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" crossorigin="anonymous"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
     <script src="websocket.js"></script>
   </body>
 </html>
