@@ -10,19 +10,46 @@ let socket = new WebSocket("ws://localhost:8080/", "PauWare_view");
 socket.onmessage = onMessage;
 
 socket.onopen = (event) => {
-    console.log("coucou");
+    console.log("connection established");
     let message = {
         action: "CONNECTION ESTABLISHED",
         description: "xx"
     };
     socket.send(JSON.stringify(message));
+    swal({
+        position: 'top-right',
+        width: '300px',
+        type: 'success',
+        title: 'CONNECTION ESTABLISHED',
+        showConfirmButton: false,
+        timer: 1500
+    });
 };
 
 socket.onclose = (event) => {
     console.error("CLIENT SAYS:");
     console.error("LOST CONNECTION TO SERVER");
     console.error("Please reboot java app and refresh this page !");
-};
+
+    swal({
+        title: 'Oops ! Something went wrong!',
+        text: 'Reloading',
+        type: 'error',
+        timer: 2000,
+        onOpen: function () {
+            swal.showLoading();
+        }
+    }).then(
+            function () {},
+            // handling the promise rejection
+                    function (dismiss) {
+                        if (dismiss === 'timer') {
+                            location.reload();
+                        }
+                    }
+            );
+
+        };
 
 
 function onMessage(event) {
@@ -99,7 +126,7 @@ function onMessage(event) {
     }
 }
 
-function display_current_date_and_time(jsonValues){
+function display_current_date_and_time(jsonValues) {
     let date = jsonValues.value0;
     $('#date').html(date);
 }
@@ -162,7 +189,6 @@ function main() {
         socket.send(JSON.stringify(message));
     });
 
-
     $('#heat').on('change', (event) => {
         console.log("Heating");
         let message = {
@@ -172,7 +198,6 @@ function main() {
         socket.send(JSON.stringify(message));
     });
 
-    //Bootstraps fucks this part ...
     $('#f_c').on('click', (event) => {
         let message;
         message = {
