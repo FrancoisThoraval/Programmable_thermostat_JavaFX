@@ -29,7 +29,7 @@ function onMessage(event){
     console.log("message received !");
     let thermostat = JSON.parse(event.data);
     switch(thermostat.action){
-               
+
         //Tout les inputs de Programmable_thermostat_input.java
         case "fan_switch_auto": fan_switch_auto(thermostat.description);
             break;
@@ -62,7 +62,7 @@ function onMessage(event){
         case "view_program": view_program();
             break;
         //------------------------------------------------------
-        //Tout les output de Programmable_thermostat_output.java    
+        //Tout les output de Programmable_thermostat_output.java
         case "display_ambient_temperature":display_ambient_temperature(thermostat);
             break;
         case "display_current_date_and_time": display_current_date_and_time();
@@ -81,7 +81,7 @@ function onMessage(event){
 function display_target_temperature(jsonValues){
     let temp = jsonValues.value0;
     let unit = jsonValues.value1;
-    
+
     $('#targetTemp').html("Target Temp: " + temp + "°" + unit);
 }
 
@@ -107,7 +107,7 @@ function f_c(unit,temp,description){
 
 function main(){
     console.log("app loaded");
-    
+
     //Clic sur le bouton "run program"
     $('#run_program').on('click',function(event){
         let message = {
@@ -116,7 +116,7 @@ function main(){
         };
         socket.send(JSON.stringify(message));
     });
-    
+
     $('#fan_switch_auto').on('change',function(event){
         console.log("clicked on fan switch");
         let message = {
@@ -125,26 +125,26 @@ function main(){
         };
         socket.send(JSON.stringify(message));
     });
-        
+
     $('#cool').on('change', function(event){
         console.log("Cooling");
         let message = {
             action: "cool",
-            description: "asking to cool temperature in house" 
+            description: "asking to cool temperature in house"
         };
         socket.send(JSON.stringify(message));
     });
-    
-    
+
+
     $('#heat').on('change', function(event){
         console.log("Heating");
         let message = {
             action: "heat",
-            description: "asking to heat temperature in house" 
+            description: "asking to heat temperature in house"
         };
         socket.send(JSON.stringify(message));
     });
-    
+
     //Bootstraps fucks this part ...
     $('#tempOptions').on('click',function(event){
         let message;
@@ -175,5 +175,3 @@ function main(){
         socket.send(JSON.stringify(message));
     });
 }
-
-
