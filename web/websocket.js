@@ -35,7 +35,7 @@ socket.onclose = (event) => {
         title: 'Oops ! Something went wrong!',
         text: 'Trying to reconnect !',
         type: 'error',
-        timer: 5000,
+        timer: 3000,
         onOpen: function () {
             swal.showLoading();
         }

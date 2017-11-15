@@ -925,5 +925,12 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
     @Override
     public void processClosed(Event event) {
         System.err.println("\n\n\n process closed ! Lost Connection with Client !\n\n\n");
+        System.err.println("Stopping App !");
+        try {
+            this.stop();
+            System.exit(1337);
+        } catch (Statechart_exception ex) {
+            Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
