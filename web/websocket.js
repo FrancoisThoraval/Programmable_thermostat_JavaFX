@@ -103,8 +103,8 @@ function onMessage(event) {
         case "view_program":
             view_program();
             break;
-            //------------------------------------------------------
-            //Tout les output de Programmable_thermostat_output.java    
+    //------------------------------------------------------
+    //Tout les output de Programmable_thermostat_output.java
         case "display_ambient_temperature":
             display_ambient_temperature(thermostat);
             break;
@@ -160,8 +160,6 @@ function f_c(unit, temp, description) {
 
 function main() {
     console.log("app loaded");
-    let hasChanged = false;
-
     //Clic sur le bouton "run program"
     $('#run_program').on('click', (event) => {
         let message = {
@@ -204,7 +202,6 @@ function main() {
             action: "f_c",
             description: "Toggle unit"
         };
-        //alert(JSON.stringify(message));
         socket.send(JSON.stringify(message));
     });
 
@@ -219,5 +216,3 @@ function main() {
 
     });
 }
-
-
