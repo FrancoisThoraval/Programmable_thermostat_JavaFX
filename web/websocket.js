@@ -97,8 +97,10 @@ function display_current_date_and_time(jsonValues) {
 function display_target_temperature(jsonValues) {
     let temp = jsonValues.value0;
     let unit = jsonValues.value1;
-
+    //$('#futureTempOut').val($('#futureTempIn').val());
     $('#targetTemp').html("Target Temp: " + temp + "°" + unit);
+    $('#futureTempOut').val(temp);
+    $('#futureTempIn').val(temp);
 }
 
 function display_ambient_temperature(jsonValues) {
@@ -121,12 +123,15 @@ function f_c(unit, temp, description) {
     console.log("Description: " + description);
 }
 
-function sendMessage(action, description) {
+function sendMessage(jsonValues){
     let messageToSend = {
-        action: action,
-        description: description
+        action: jsonValues[0],
+        description: jsonValues[1]
     };
-
+    if(jsonValues.length > 2){
+        for(let i=2; i<jsonValues.length ; i+=2)
+            messageToSend[jsonValues[i]] = jsonValues[i+1];
+    }
     socket.send(JSON.stringify(messageToSend));
 }
 
@@ -134,57 +139,51 @@ function main() {
     console.log("app loaded");
     //Clic sur le bouton "run program"
     $('#run_program').on('click', (event) => {
-        sendMessage("run_program", "program should run");
+        sendMessage(["run_program", "program should run"]);
     });
 
     $('#fan_switch_auto').on('change', (event) => {
-        sendMessage("fan_switch_auto", "Switch fan on automatic mode");
+        sendMessage(["fan_switch_auto", "Switch fan on automatic mode"]);
     });
 
     $('#fan_switch_on').on('change', (event) => {
-        sendMessage("fan_switch_on", "Switch fan on 'on' mode");
+        sendMessage(["fan_switch_on", "Switch fan on 'on' mode"]);
     });
 
     $('#cool').on('change', (event) => {
-        sendMessage("cool", "asking to cool temperature in house");
+        sendMessage(["cool", "asking to cool temperature in house"]);
     });
 
     $('#heat').on('change', (event) => {
-        sendMessage("heat", "asking to heat temperature in house");
+        sendMessage(["heat","asking to heat temperature in house"]);
     });
 
     $('#f_c').on('click', (event) => {
-        sendMessage("f_c", "Toggle unit");
+        sendMessage(["f_c", "Toggle unit"]);
     });
 
     $('#futureTempIn').on('input', (event) => {
         $('#futureTempOut').val($('#futureTempIn').val());
-        let message = {
-            action: "target_temp_change",
-            temp: $('#futureTempOut').val(),
-            description: "changing the target temperature value"
-        };
-        socket.send(JSON.stringify(message));
-
+        sendMessage(["target_temp_change","changing the target temperature mode","temp", $('#futureTempOut').val()]);
     });
 
     $('#timeForward').on('click', (event) => {
-        sendMessage("time_forward", "forwarding time");
+        sendMessage(["time_forward", "forwarding time"]);
     });
 
     $('#timeBackward').on('click', (event) => {
-        sendMessage("time_backward", "backwarding time");
+        sendMessage(["time_backward", "backwarding time"]);
     });
 
     $('#set_day').on('click', (event) => {
-        sendMessage("set_day", "setting the day");
+        sendMessage(["set_day", "setting the day"]);
     });
 
     $('#set_clock').on('click', (event) => {
-        sendMessage("set_clock", "setting the clock");
+        sendMessage(["set_clock", "setting the clock"]);
     });
 
     $('#view_program').on('click', (event) => {
-        sendMessage("view_program", "viewing programs");
+        sendMessage(["view_program", "viewing programs"]);
     });
 }
