@@ -94,7 +94,8 @@ public class WebSocketServer implements Runnable {
         assert (client._socket.isClosed());
         _clients.remove(client);
         if (_clients.isEmpty()) {
-            stop();
+            //stop();
+            //FrançoisThoraval: Removed this because if client close tab and reopen it, he can't reconnect
         }
 //        for (WebSocketListener listener : _listeners) {
 //            listener.processClosed(new Event(client));

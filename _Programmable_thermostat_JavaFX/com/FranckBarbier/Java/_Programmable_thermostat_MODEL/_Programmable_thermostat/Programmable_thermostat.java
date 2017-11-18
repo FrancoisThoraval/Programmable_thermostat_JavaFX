@@ -11,7 +11,6 @@ import com.pauware.pauware_engine._Java_ME.*;
 import com.FranckBarbier.Java._Programmable_thermostat_MODEL._Relays.*;
 import com.FranckBarbier.Java._Programmable_thermostat_MODEL._Switchs.*;
 import com.FranckBarbier.Java._Temperature.*;
-import com.LuccheseThoraval.Java._Temperature.Websocket.Websocket;
 import com.seekdasky.websocket.Client;
 import com.seekdasky.websocket.Event;
 import com.seekdasky.websocket.Token;
@@ -324,7 +323,9 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         _Programmable_thermostat_state_machine.fires("ambient_temperature_changed", _Control, _Control, this, "season_switch_in_Is_cool_and_ambient_temperature_lessThan_target_temperature_minus_delta", _fan_relay, "stop", new Object[]{Boolean.valueOf(_fan_switch.in("Is auto"))});
         _Programmable_thermostat_state_machine.fires("ambient_temperature_changed", _Control, _Control, this, "season_switch_in_Is_heat_and_ambient_temperature_greaterThan_target_temperature_plus_delta", _fan_relay, "stop", new Object[]{Boolean.valueOf(_fan_switch.in("Is auto"))});
         _Programmable_thermostat_state_machine.run_to_completion("ambient_temperature_changed");
-
+        
+        
+        //FrançoisThoraval
         //SENDING TO WEBSOCKET SO WE CAN REFRESH HTML PAGE
         try {
             if (_client != null) {
@@ -340,7 +341,9 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
                 message[0] = temp.substring(0, temp.length() - 2);
                 message[1] = temp.substring(temp.length() - 1, temp.length());
                 System.out.println("\n*******TEMP*******\n" + temp);
-                _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_ambient_temperature", message).build()));
+                if (_client != null) {
+                    _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_ambient_temperature", message).build()));
+                }
 
             }
         } catch (IOException ex) {
@@ -361,7 +364,10 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
                 message[0] = temp.substring(0, temp.length() - 2);
                 message[1] = temp.substring(temp.length() - 1, temp.length());
                 System.out.println("\n*******TEMP*******\n" + temp);
-                _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_target_temperature", message).build()));
+                if (_client != null) {
+                    _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_target_temperature", message).build()));
+
+                }
 
             }
         } catch (IOException ex) {
@@ -458,6 +464,31 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         _Programmable_thermostat_state_machine.fires("view_program", _Set_period, _Set_period, _period == 8, this, "set_period", new Object[]{Integer.valueOf(1)});
         _Programmable_thermostat_state_machine.fires("view_program", _Set_period, _Set_period, _period != 8, this, "set_period", new Object[]{Integer.valueOf(_period + 1)});
         _Programmable_thermostat_state_machine.run_to_completion("view_program");
+        
+        
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.println("PROGRAM *****");
+        //System.out.println(this);
+        System.out.println("difference" + this._program[0].difference);
+        System.out.println("difference" + this._program[0].target_temperature.asStringCelsius(1));
+        System.out.println("difference" + this._program[0].time.toString());
+//        try {
+//            if (_client != null) {
+//                String[] message = new String[10];
+//                String program = this._program[0].target_temperature;
+//
+//                message[0] = temp.substring(0, temp.length() - 2);
+//                message[1] = temp.substring(temp.length() - 1, temp.length());
+//                System.out.println("\n*******TEMP*******\n" + temp);
+//                if (_client != null) {
+//                    _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_target_temperature", message).build()));
+//
+//                }
+//
+//            }
+//        } catch (IOException ex) {
+//            Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     /**
@@ -509,8 +540,6 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         if (_user_interface != null) {
             _user_interface.display_target_temperature(_target_temperature, _temperature_mode);
         }
-
-        //SENDING TO WEBSOCKET SO WE CAN REFRESH HTML PAGE
     }
 
     void program_at_period_target_temperature_decrement(int index) {
@@ -578,15 +607,15 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
                 value = date.toString();
 
                 message[0] = value;
-                System.out.println("\n*******TIME*******\n" + value);
-                _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_current_date_and_time", message).build()));
+                if (_client != null) {
+                    _WebSocketServer.sendToken(_client, Token.buildFromJSON(createMessage("display_current_date_and_time", message).build()));
+
+                }
 
             }
         } catch (IOException ex) {
             Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        System.out.println("\n\nakjhakhd\n\n\n\n\n\n\n\n");
     }
 
     void switch_mode() {
@@ -841,8 +870,6 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
 
     @Override
     public void start(String string) throws Exception {
-        System.out.println("start");
-        System.out.println(string);
         _WebSocketServer.addListener(this);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -866,10 +893,7 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
     public void processEvent(Event event, Token token) {
         if (_client == null) {
             _client = event.getConnector();
-            System.out.println("\n****Connection established****\n");
         }
-        System.out.println("action: " + token.getString("action"));
-
         //Action from Client
         switch (token.getString("action")) {
             case "hold_temp": {
@@ -904,20 +928,84 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
                 }
                 break;
             }
-            case "target_temp_change":{
-                if(_temperature_mode == 0){ //Celcius
+            case "target_temp_change": {
+                if (_temperature_mode == 0) { //Celcius
                     try {
-                        this._target_temperature = new Temperature(Float.parseFloat(token.getString("temp")),Temperature.Celsius);
+                        this._target_temperature = new Temperature(Float.parseFloat(token.getString("temp")), Temperature.Celsius);
                     } catch (Invalid_temperature_exception ex) {
                         Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                }else{
+                } else {
                     try {
-                        this._target_temperature = new Temperature(Float.parseFloat(token.getString("temp")),Temperature.Fahrenheit);
+                        this._target_temperature = new Temperature(Float.parseFloat(token.getString("temp")), Temperature.Fahrenheit);
                     } catch (Invalid_temperature_exception ex) {
                         Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+            }
+            case "time_forward": {
+                try {
+                    time_forward();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "time_backward": {
+                try {
+                    time_backward();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "fan_switch_auto": {
+                try {
+                    fan_switch_auto();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "fan_switch_on": {
+                try {
+                    fan_switch_on();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "set_day": {
+                try {
+                    set_day();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "set_clock": {
+                try {
+                    set_clock();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "view_program": {
+                try {
+                    view_program();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "run_program": {
+                try {
+                    run_program();
+                } catch (Statechart_exception ex) {
+                    Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
             }
         }
     }
@@ -925,12 +1013,8 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
     @Override
     public void processClosed(Event event) {
         System.err.println("\n\n\n process closed ! Lost Connection with Client !\n\n\n");
-        System.err.println("Stopping App !");
-        try {
-            this.stop();
-            System.exit(1337);
-        } catch (Statechart_exception ex) {
-            Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        _client = null;
+        _WebSocketServer.stop();
+        System.out.println("is server alive" + _WebSocketServer.isAlive());
     }
 }
