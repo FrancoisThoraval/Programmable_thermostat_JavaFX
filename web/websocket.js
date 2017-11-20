@@ -66,6 +66,22 @@ function onMessage(event) {
         case "view_program":
             view_program(thermostat);
             break;
+
+        case "heat":
+            heat();
+            break;
+        case "cool":
+            cool();
+            break;
+        case "off":
+            off();
+            break;
+        case "auto":
+            auto();
+            break;
+        case "on":
+            on();
+            break;
             //------------------------------------------------------
             //Tout les output de Programmable_thermostat_output.java
         case "display_target_temperature":
@@ -82,6 +98,26 @@ function onMessage(event) {
             update_run_indicator_status();
             break;
     }
+}
+
+function auto() {
+    $('#fan_switch_auto').click(); //not optimal but it's a workaround for the bootstrap radios ...
+}
+
+function on() {
+    $('#fan_switch_on').click(); //not optimal but it's a workaround for the bootstrap radios ...
+}
+
+function off() {
+    $('#off').click(); //not optimal but it's a workaround for the bootstrap radios ...
+}
+
+function cool() {
+    $('#cool').click(); //not optimal but it's a workaround for the bootstrap radios ...
+}
+
+function heat() {
+    $('#heat').click(); //not optimal but it's a workaround for the bootstrap radios ...
 }
 
 function view_program(jsonValues) {
@@ -123,14 +159,14 @@ function f_c(unit, temp, description) {
     console.log("Description: " + description);
 }
 
-function sendMessage(jsonValues){
+function sendMessage(jsonValues) {
     let messageToSend = {
         action: jsonValues[0],
         description: jsonValues[1]
     };
-    if(jsonValues.length > 2){
-        for(let i=2; i<jsonValues.length ; i+=2)
-            messageToSend[jsonValues[i]] = jsonValues[i+1];
+    if (jsonValues.length > 2) {
+        for (let i = 2; i < jsonValues.length; i += 2)
+            messageToSend[jsonValues[i]] = jsonValues[i + 1];
     }
     socket.send(JSON.stringify(messageToSend));
 }
@@ -155,7 +191,11 @@ function main() {
     });
 
     $('#heat').on('change', (event) => {
-        sendMessage(["heat","asking to heat temperature in house"]);
+        sendMessage(["heat", "asking to heat temperature in house"]);
+    });
+
+    $('#off').on('change', (event) => {
+        sendMessage(["off", "asking to off temperature in house"]);
     });
 
     $('#f_c').on('click', (event) => {
@@ -164,7 +204,7 @@ function main() {
 
     $('#futureTempIn').on('input', (event) => {
         $('#futureTempOut').val($('#futureTempIn').val());
-        sendMessage(["target_temp_change","changing the target temperature mode","temp", $('#futureTempOut').val()]);
+        sendMessage(["target_temp_change", "changing the target temperature mode", "temp", $('#futureTempOut').val()]);
     });
 
     $('#timeForward').on('click', (event) => {
