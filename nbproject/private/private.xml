@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="2">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="4">
         <file>
             <url>_Programmable_thermostat_JavaFX/com/FranckBarbier/Java/_Programmable_thermostat_MODEL/_Programmable_thermostat/Programmable_thermostat.java</url>
             <bookmark id="2">
                 <name/>
-                <line>590</line>
+                <line>600</line>
+                <key/>
+            </bookmark>
+            <bookmark id="4">
+                <name/>
+                <line>742</line>
+                <key/>
+            </bookmark>
+            <bookmark id="3">
+                <name/>
+                <line>1084</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/_Programmable_thermostat_JavaFX/com/FranckBarbier/Java/_Programmable_thermostat_MODEL/_Programmable_thermostat/Programmable_thermostat_output.java</file>
+            <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/_Programmable_thermostat_JavaFX/com/seekdasky/websocket/WebSocketServer.java</file>
+            <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/_Programmable_thermostat_JavaFX/com/seekdasky/websocket/Client.java</file>
             <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/web/websocket.js</file>
             <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/_Programmable_thermostat_JavaFX/com/FranckBarbier/Java/_Programmable_thermostat_MODEL/_Programmable_thermostat/Programmable_thermostat.java</file>
         </group>

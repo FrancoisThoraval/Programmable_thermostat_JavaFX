@@ -6,7 +6,8 @@ Object.defineProperty(window, "Window_loaded", {value: new Promise(g => {
     }), enumerable: false, configurable: false, writable: false});
 window.addEventListener('load', Window_loaded);
 
-let socket = new WebSocket("ws://10.8.23.0:8080/", "PauWare_view");
+let id;
+let socket = new WebSocket("ws://10.8.23.64:8080/", "PauWare_view");
 //let socket = new WebSocket("ws://localhost:8080/", "PauWare_view");
 
 socket.onmessage = onMessage;
@@ -15,7 +16,8 @@ socket.onopen = (event) => {
     console.log("connection established");
     let message = {
         action: "CONNECTION ESTABLISHED",
-        description: "xx"
+        description: "xx",
+        id :"-1"
     };
     socket.send(JSON.stringify(message));
     swal({
@@ -58,7 +60,10 @@ function onMessage(event) {
     console.log("message received !");
     let thermostat = JSON.parse(event.data);
     switch (thermostat.action) {
-
+        case "set_id":
+            set_id(thermostat);
+            break;
+        
         //Tout les inputs de Programmable_thermostat_input.java
         case "f_c" :
             f_c(thermostat.unit, thermostat.temp, thermostat.description);
@@ -100,6 +105,11 @@ function onMessage(event) {
     }
 }
 
+function set_id(jsonValues){
+    id = jsonValues.value0;
+    console.log(id);
+}
+
 function auto() {
     $('#fan_switch_auto').click(); //not optimal but it's a workaround for the bootstrap radios ...
 }
@@ -133,7 +143,6 @@ function display_current_date_and_time(jsonValues) {
 function display_target_temperature(jsonValues) {
     let temp = jsonValues.value0;
     let unit = jsonValues.value1;
-    //$('#futureTempOut').val($('#futureTempIn').val());
     $('#targetTemp').html("Target Temp: " + temp + "°" + unit);
     $('#futureTempOut').val(temp);
     $('#futureTempIn').val(temp);
@@ -162,7 +171,8 @@ function f_c(unit, temp, description) {
 function sendMessage(jsonValues) {
     let messageToSend = {
         action: jsonValues[0],
-        description: jsonValues[1]
+        description: jsonValues[1],
+        id : id
     };
     if (jsonValues.length > 2) {
         for (let i = 2; i < jsonValues.length; i += 2)
