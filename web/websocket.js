@@ -1,14 +1,14 @@
 "use strict";
 
+let id;
+//let socket = new WebSocket("ws://10.8.23.64:8080/", "PauWare_view");
+let socket = new WebSocket("ws://localhost:8080/", "PauWare_view");
+
 let Window_loaded = null;
 Object.defineProperty(window, "Window_loaded", {value: new Promise(g => {
         Window_loaded = main;
     }), enumerable: false, configurable: false, writable: false});
 window.addEventListener('load', Window_loaded);
-
-let id;
-let socket = new WebSocket("ws://10.8.23.64:8080/", "PauWare_view");
-//let socket = new WebSocket("ws://localhost:8080/", "PauWare_view");
 
 socket.onmessage = onMessage;
 
@@ -17,7 +17,7 @@ socket.onopen = (event) => {
     let message = {
         action: "CONNECTION ESTABLISHED",
         description: "xx",
-        id :"-1"
+        id: "-1"
     };
     socket.send(JSON.stringify(message));
     swal({
@@ -63,8 +63,8 @@ function onMessage(event) {
         case "set_id":
             set_id(thermostat);
             break;
-        
-        //Tout les inputs de Programmable_thermostat_input.java
+
+            //Tout les inputs de Programmable_thermostat_input.java
         case "f_c" :
             f_c(thermostat.unit, thermostat.temp, thermostat.description);
             break;
@@ -105,7 +105,7 @@ function onMessage(event) {
     }
 }
 
-function set_id(jsonValues){
+function set_id(jsonValues) {
     id = jsonValues.value0;
     console.log(id);
 }
@@ -172,7 +172,7 @@ function sendMessage(jsonValues) {
     let messageToSend = {
         action: jsonValues[0],
         description: jsonValues[1],
-        id : id
+        id: id
     };
     if (jsonValues.length > 2) {
         for (let i = 2; i < jsonValues.length; i += 2)

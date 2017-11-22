@@ -6,11 +6,14 @@ public class Client implements Runnable {
     protected final java.io.InputStream _inputStream;
     protected final java.io.OutputStream _outputStream;
     protected final java.net.Socket _socket;
+    
+    public int id;
 
     public Client(java.net.Socket socket) throws java.io.IOException {
         _inputStream = socket.getInputStream();
         _outputStream = socket.getOutputStream();
         _socket = socket;
+        id = -1;
     }
 
     public void stop(String reason) throws java.io.IOException {
@@ -58,6 +61,9 @@ public class Client implements Runnable {
                 if (i != 0) {
                     this.dispatchEvent(message);
                 }
+            }
+            if(_socket.isClosed()){
+                this.stop("qsd");
             }
 //            _inputStream.close();
 //            _outputStream.close();
