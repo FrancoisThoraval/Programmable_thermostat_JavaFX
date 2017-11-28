@@ -94,8 +94,15 @@ public class WebSocketServer implements Runnable {
         assert (client._socket.isClosed());
         _clients.remove(client);
         if (_clients.isEmpty()) {
+            /*
+            *   Modification par François Thoraval:
+            *   On appelle la méthode stop lorsqu'il n'y a plus de clients.
+            *   Dans le cas d'une application web, si le client recharge la page
+            *   ou ferme son navigateur onClientClose sera appellé, entrainant
+            *   la fermeture du serveur. Le client ne pourra plus s'y reconnecter
+            *   sauf en relançant l'application java.
+            */
             //stop();
-            //FrançoisThoraval: Removed this because if client close tab and reopen it, he can't reconnect
         }
 //        for (WebSocketListener listener : _listeners) {
 //            listener.processClosed(new Event(client));

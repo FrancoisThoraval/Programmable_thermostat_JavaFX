@@ -7,12 +7,15 @@ public class Client implements Runnable {
     protected final java.io.OutputStream _outputStream;
     protected final java.net.Socket _socket;
     
+    //François Thoraval:    J'ai ajouté un id pour potentiellement envoyer 
+    //                      à un client précis certaines informations
     public int id;
 
     public Client(java.net.Socket socket) throws java.io.IOException {
         _inputStream = socket.getInputStream();
         _outputStream = socket.getOutputStream();
         _socket = socket;
+        //
         id = -1;
     }
 
@@ -63,7 +66,7 @@ public class Client implements Runnable {
                 }
             }
             if(_socket.isClosed()){
-                this.stop("qsd");
+                //this.stop("qsd");
             }
 //            _inputStream.close();
 //            _outputStream.close();

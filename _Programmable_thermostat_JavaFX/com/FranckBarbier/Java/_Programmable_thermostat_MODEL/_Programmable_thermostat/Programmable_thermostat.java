@@ -174,7 +174,7 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         return json;
 
     }
-    
+
     private Client[] sortClients(Client[] client) throws IOException {
         Client[] sort = new Client[10];
         int j = 0;
@@ -192,8 +192,8 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
             }
 
         }
-        printClients(client);
-        printClients(sort);
+        //printClients(client);
+        //printClients(sort);
         if (!isEmpty) {
             _NumberOfClients = newNumberOfClients;
             j = 0;
@@ -202,6 +202,7 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
                 String[] message = {String.valueOf(j)};
                 if (c != null) {
                     _WebSocketServer.sendToken(c, Token.buildFromJSON(createMessage("set_id", message).build()));
+                    c.id = j;
                 }
                 j++;
             }
@@ -209,9 +210,8 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         }
         return sort;
     }
-    
+
     //François Thoraval  - Websocket /end
-    
     private void init_structure(Temperature temperature) throws Statechart_exception {
         try {
             _ambient_temperature = (Temperature) temperature.clone();
@@ -374,55 +374,53 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         //FrançoisThoraval
         //SENDING TO WEBSOCKET SO WE CAN REFRESH HTML PAGE
         try {
-            if (_client != null) {
-                String[] message = new String[10];
-                String temp;
-                if (this._temperature_mode == 0) {
-                    temp = this._ambient_temperature.asStringCelsius(1);
-                } else {
-                    temp = this._ambient_temperature.asStringFahrenheit(1);
+            String[] message = new String[10];
+            String temp;
+            if (this._temperature_mode == 0) {
+                temp = this._ambient_temperature.asStringCelsius(1);
+            } else {
+                temp = this._ambient_temperature.asStringFahrenheit(1);
+            }
+
+            //We have to remove the ° character from the temp otherwise it causes a Json input error in JS, thus close the socket connection.
+            message[0] = temp.substring(0, temp.length() - 2);
+            message[1] = temp.substring(temp.length() - 1, temp.length());
+            System.out.println("\n*******TEMP*******\n" + temp);
+            System.out.println("clients: " + _NumberOfClients);
+
+            this.sortClients(_client);
+            for (int i = 0; i < _NumberOfClients; i++) {
+                if (_client[i] != null) {
+                    _WebSocketServer.sendToken(_client[i], Token.buildFromJSON(createMessage("display_ambient_temperature", message).build()));
                 }
-
-                //We have to remove the ° character from the temp otherwise it causes a Json input error in JS, thus close the socket connection.
-                message[0] = temp.substring(0, temp.length() - 2);
-                message[1] = temp.substring(temp.length() - 1, temp.length());
-                System.out.println("\n*******TEMP*******\n" + temp);
-                System.out.println("clients: " + _NumberOfClients);
-
-                this.sortClients(_client);
-                for (int i = 0; i < _NumberOfClients; i++) {
-                    if (_client[i] != null) {
-                        _WebSocketServer.sendToken(_client[i], Token.buildFromJSON(createMessage("display_ambient_temperature", message).build()));
-                    }
-                }
-
             }
         } catch (IOException ex) {
             Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try {
+            String[] message = new String[10];
+            String temp;
+            if (this._temperature_mode == 0) {
+                temp = this._target_temperature.asStringCelsius(1);
+            } else {
+                temp = this._target_temperature.asStringFahrenheit(1);
+            }
+
+            //We have to remove the ° character from the temp otherwise it causes a Json input error in JS, thus close the socket connection.
+            message[0] = temp.substring(0, temp.length() - 2);
+            message[1] = temp.substring(temp.length() - 1, temp.length());
+            System.out.println("\n*******TEMP*******\n" + temp);
+
             this.sortClients(_client);
-            if (_client != null) {
-                String[] message = new String[10];
-                String temp;
-                if (this._temperature_mode == 0) {
-                    temp = this._target_temperature.asStringCelsius(1);
-                } else {
-                    temp = this._target_temperature.asStringFahrenheit(1);
+            for (int i = 0; i < _NumberOfClients; i++) {
+                if (_client[i] != null) {
+                    System.out.println("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[");
+                    System.out.println("c: " + _client[i].id);
+                    _WebSocketServer.sendToken(_client[i], Token.buildFromJSON(createMessage("display_target_temperature", message).build()));
+                    
                 }
-
-                //We have to remove the ° character from the temp otherwise it causes a Json input error in JS, thus close the socket connection.
-                message[0] = temp.substring(0, temp.length() - 2);
-                message[1] = temp.substring(temp.length() - 1, temp.length());
-                System.out.println("\n*******TEMP*******\n" + temp);
-
-                for (int i = 0; i < _NumberOfClients; i++) {
-                    if (_client[i] != null) {
-                        _WebSocketServer.sendToken(_client[i], Token.buildFromJSON(createMessage("display_target_temperature", message).build()));
-                    }
-                }
-
+                System.out.println("is server alive ? " + _WebSocketServer.isAlive());
             }
         } catch (IOException ex) {
             Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
@@ -1150,9 +1148,16 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
     public void processClosed(Event event) {
         System.err.println("\n\n\n process closed ! Lost Connection with Client !\n\n\n");
         System.out.println("currentID: " + currentID);
+        Client c = event.getConnector();
+        int idToClose = currentID;
+        if (c.id != -1) {
+            idToClose = c.id;
+        }
         try {
-            _client[currentID]= null;
-            sortClients(_client);
+            _client[idToClose] = null;
+            _client = sortClients(_client);
+            System.out.println("################################################################################\n_____ process closed");
+            //printClients(_client);
         } catch (IOException ex) {
             Logger.getLogger(Programmable_thermostat.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1165,9 +1170,9 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         int i = 0;
         System.out.println("*********************** DEBUG *****************************\n\n\n");
         for (Client c : client) {
-            i++;
             System.out.println("client[" + i + "]: " + c);
-            if(c!=null){
+            i++;
+            if (c != null) {
                 System.out.println("id: " + c.id);
                 System.out.println("currentID: " + currentID);
             }
@@ -1175,5 +1180,4 @@ public class Programmable_thermostat extends AbstractTimer_monitor implements Pr
         System.out.println("***********************************************************\n\n\n");
     }
 
-    
 }

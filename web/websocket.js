@@ -137,6 +137,7 @@ function view_program(jsonValues) {
 
 function display_current_date_and_time(jsonValues) {
     let date = jsonValues.value0;
+    console.log(date);
     $('#date').html(date);
 }
 
