@@ -104,6 +104,7 @@ public class WebSocketServer implements Runnable {
             */
             //stop();
         }
+        
 //        for (WebSocketListener listener : _listeners) {
 //            listener.processClosed(new Event(client));
 //        }

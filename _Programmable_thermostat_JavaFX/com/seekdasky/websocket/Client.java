@@ -65,9 +65,6 @@ public class Client implements Runnable {
                     this.dispatchEvent(message);
                 }
             }
-            if(_socket.isClosed()){
-                //this.stop("qsd");
-            }
 //            _inputStream.close();
 //            _outputStream.close();
         } catch (java.security.NoSuchAlgorithmException | java.io.UnsupportedEncodingException e) {
@@ -76,7 +73,7 @@ public class Client implements Runnable {
             // TODO Auto-generated catch block
             ioe.printStackTrace();
         }
-        WebSocketServer.getInstance().onClientClose(this);
+        //WebSocketServer.getInstance().onClientClose(this);
     }
 
     private void _initialization() throws java.security.NoSuchAlgorithmException, java.io.UnsupportedEncodingException {

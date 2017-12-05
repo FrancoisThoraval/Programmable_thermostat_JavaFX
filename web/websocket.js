@@ -1,6 +1,6 @@
 "use strict";
 
-let id;
+let id = -1;
 //let socket = new WebSocket("ws://10.8.23.64:8080/", "PauWare_view");
 let socket = new WebSocket("ws://localhost:8080/", "PauWare_view");
 
@@ -59,7 +59,7 @@ socket.onclose = (event) => {
 function onMessage(event) {
     console.log("message received !");
     let thermostat = JSON.parse(event.data);
-    switch (thermostat.action) {
+    switch (thermostat.action) { 
         case "set_id":
             set_id(thermostat);
             break;
@@ -68,6 +68,7 @@ function onMessage(event) {
         case "f_c" :
             f_c(thermostat.unit, thermostat.temp, thermostat.description);
             break;
+            
         case "view_program":
             view_program(thermostat);
             break;
@@ -107,7 +108,7 @@ function onMessage(event) {
 
 function set_id(jsonValues) {
     id = jsonValues.value0;
-    console.log(id);
+    console.log("id: " + id);
 }
 
 function auto() {
@@ -131,8 +132,8 @@ function heat() {
 }
 
 function view_program(jsonValues) {
-    program = jsonValues.value0;
-    $('#date').html(program);
+    let program = jsonValues.value0;
+    $('#date').html("Program: " + program);
 }
 
 function display_current_date_and_time(jsonValues) {
