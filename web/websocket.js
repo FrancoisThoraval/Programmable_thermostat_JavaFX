@@ -1,7 +1,7 @@
 "use strict";
 
 let id = -1;
-let socket = new WebSocket("ws://10.8.23.64:8080/", "PauWare_view");
+let socket = new WebSocket("ws://10.8.23.247:8080/", "PauWare_view");
 //let socket = new WebSocket("ws://localhost:8080/", "PauWare_view");
 
 let Window_loaded = null;
