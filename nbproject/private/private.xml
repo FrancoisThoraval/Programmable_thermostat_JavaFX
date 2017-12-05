@@ -5,22 +5,22 @@
             <url>_Programmable_thermostat_JavaFX/com/FranckBarbier/Java/_Programmable_thermostat_MODEL/_Programmable_thermostat/Programmable_thermostat.java</url>
             <bookmark id="2">
                 <name/>
-                <line>636</line>
+                <line>626</line>
                 <key/>
             </bookmark>
             <bookmark id="4">
                 <name/>
-                <line>778</line>
+                <line>768</line>
                 <key/>
             </bookmark>
             <bookmark id="3">
                 <name/>
-                <line>1122</line>
+                <line>1119</line>
                 <key/>
             </bookmark>
             <bookmark id="5">
                 <name/>
-                <line>1156</line>
+                <line>1151</line>
                 <key/>
             </bookmark>
         </file>
@@ -31,6 +31,8 @@
             <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/_Programmable_thermostat_JavaFX/com/seekdasky/websocket/Client.java</file>
             <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/web/websocket.js</file>
             <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/_Programmable_thermostat_JavaFX/com/FranckBarbier/Java/_Programmable_thermostat_MODEL/_Programmable_thermostat/Programmable_thermostat.java</file>
+            <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/_Programmable_thermostat_JavaFX/com/seekdasky/websocket/Token.java</file>
+            <file>file:/D:/Documents/CAI/Programmable_thermostat_JavaFX/Programmable_thermostat_JavaFX/_Programmable_thermostat_JavaFX/com/seekdasky/websocket/Stream.java</file>
         </group>
     </open-files>
 </project-private>
